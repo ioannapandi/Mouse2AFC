@@ -3,258 +3,156 @@ function Mouse2AFC
 % This project is available on https://github.com/KepecsLab/BpodProtocols_Olf2AFC/
 
 global BpodSystem
+addpath('Definitions');
 
+% Check before overriding TaskParameters
+BpodSystem.Data.Custom.IsHomeCage = isfield(BpodSystem.ProtocolSettings, 'HomeCage');
 %% Task parameters
 global TaskParameters
 TaskParameters = BpodSystem.ProtocolSettings;
+GUICurVer = 28;
 if isempty(fieldnames(TaskParameters))
-    %% General
-    TaskParameters.GUI.ITI = 0; % (s)
-    TaskParameters.GUI.RewardAmount = 25;
-    TaskParameters.GUI.ChoiceDeadLine = 5;
-    TaskParameters.GUI.TimeOutIncorrectChoice = 0; % (s)
-    TaskParameters.GUI.TimeOutBrokeFixation = 0; % (s)
-    TaskParameters.GUI.TimeOutEarlyWithdrawal = 0; % (s)
-    TaskParameters.GUI.TimeOutSkippedFeedback = 0; % (s)
-    TaskParameters.GUI.PercentAuditory = 1;
-    TaskParameters.GUI.StartEasyTrials = 0;
-    TaskParameters.GUI.Percent50Fifty = 0;
-    TaskParameters.GUI.PercentCatch = 0;
-    TaskParameters.GUI.CatchError = false;
-    TaskParameters.GUIMeta.CatchError.Style = 'checkbox';
-    TaskParameters.GUI.Ports_LMR = 123;
-    TaskParameters.GUI.Wire1VideoTrigger = false;
-    TaskParameters.GUIMeta.Wire1VideoTrigger.Style = 'checkbox';
-    TaskParameters.GUIPanels.General = {'ITI','RewardAmount','ChoiceDeadLine','TimeOutIncorrectChoice','TimeOutBrokeFixation','TimeOutEarlyWithdrawal','TimeOutSkippedFeedback','PercentAuditory','StartEasyTrials','Percent50Fifty','PercentCatch','CatchError','Ports_LMR','Wire1VideoTrigger'};
-    %% BiasControl
-    TaskParameters.GUI.TrialSelection = 3;
-    TaskParameters.GUIMeta.TrialSelection.Style = 'popupmenu';
-    TaskParameters.GUIMeta.TrialSelection.String = {'Flat','Manual','BiasCorrecting','Competitive'};
-    TaskParameters.GUIPanels.BiasControl = {'TrialSelection'};
-    %% StimDelay
-    TaskParameters.GUI.StimDelayAutoincrement = 1;
-    TaskParameters.GUIMeta.StimDelayAutoincrement.Style = 'checkbox';
-    TaskParameters.GUIMeta.StimDelayAutoincrement.String = 'Auto';
-    TaskParameters.GUI.StimDelayMin = 0;
-    TaskParameters.GUI.StimDelayMax = 0.6;
-    TaskParameters.GUI.StimDelayIncr = 0.01;
-    TaskParameters.GUI.StimDelayDecr = 0.01;
-    TaskParameters.GUI.StimDelay = TaskParameters.GUI.StimDelayMin;
-    TaskParameters.GUIMeta.StimDelay.Style = 'text';
-    TaskParameters.GUIPanels.StimDelay = {'StimDelayAutoincrement','StimDelayMin','StimDelayMax','StimDelayIncr','StimDelayDecr','StimDelay'};
-    %% FeedbackDelay
-    TaskParameters.GUI.FeedbackDelaySelection = 2;
-    TaskParameters.GUIMeta.FeedbackDelaySelection.Style = 'popupmenu';
-    TaskParameters.GUIMeta.FeedbackDelaySelection.String = {'Fix','AutoIncr','TruncExp'};
-    TaskParameters.GUI.FeedbackDelayMin = 0;
-    TaskParameters.GUI.FeedbackDelayMax = 1;
-    TaskParameters.GUI.FeedbackDelayIncr = 0.01;
-    TaskParameters.GUI.FeedbackDelayDecr = 0.01;
-    TaskParameters.GUI.FeedbackDelayTau = 0.05;
-    TaskParameters.GUI.FeedbackDelayGrace = 0;
-    TaskParameters.GUI.IncorrectChoiceFBType = 2;
-    TaskParameters.GUIMeta.IncorrectChoiceFBType.Style = 'popupmenu';
-    TaskParameters.GUIMeta.IncorrectChoiceFBType.String = {'None','Tone','PortLED'};
-    TaskParameters.GUI.SkippedFeedbackFBType = 2;
-    TaskParameters.GUIMeta.SkippedFeedbackFBType.Style = 'popupmenu';
-    TaskParameters.GUIMeta.SkippedFeedbackFBType.String = {'None','Tone','PortLED'};
-    TaskParameters.GUI.FeedbackDelay = TaskParameters.GUI.FeedbackDelayMin;
-    TaskParameters.GUIMeta.FeedbackDelay.Style = 'text';
-    TaskParameters.GUIPanels.FeedbackDelay = {'FeedbackDelaySelection','FeedbackDelayMin','FeedbackDelayMax','FeedbackDelayIncr','FeedbackDelayDecr','FeedbackDelayTau','FeedbackDelayGrace','FeedbackDelay','IncorrectChoiceFBType','SkippedFeedbackFBType'};
-%     %% OdorParams
-%     TaskParameters.GUI.OdorA_bank = 3;
-%     TaskParameters.GUI.OdorB_bank = 4;
-%     TaskParameters.GUI.OdorTable.OdorFracA = [5, 30, 45, 55, 70, 95]';
-%     TaskParameters.GUI.OdorTable.OdorProb = ones(size(TaskParameters.GUI.OdorTable.OdorFracA))/numel(TaskParameters.GUI.OdorTable.OdorFracA);
-%     TaskParameters.GUIMeta.OdorTable.Style = 'table';
-%     TaskParameters.GUIMeta.OdorTable.String = 'Odor probabilities';
-%     TaskParameters.GUIMeta.OdorTable.ColumnLabel = {'a = Frac Odor A','P(a)'};
-%     TaskParameters.GUI.OdorStimulusTimeMin = 0;
-%     TaskParameters.GUIPanels.Olfactometer = {'OdorA_bank', 'OdorB_bank'};
-%     TaskParameters.GUIPanels.OlfStimuli = {'OdorTable','OdorStimulusTimeMin'};
-    %% Auditory Params
-    %clicks
-    TaskParameters.GUI.AuditoryAlpha = 1;
-    TaskParameters.GUI.LeftBiasAud = 0.5;
-    TaskParameters.GUIMeta.LeftBiasAud.Style = 'text';
-    TaskParameters.GUI.SumRates = 100;
-%     %zador freq stimuli
-%     TaskParameters.GUI.Aud_nFreq = 18;
-%     TaskParameters.GUI.Aud_NoEvidence = 0;
-%     TaskParameters.GUI.Aud_minFreq = 200;
-%     TaskParameters.GUI.Aud_maxFreq = 20000;
-%     TaskParameters.GUI.Aud_Volume = 70;
-%     TaskParameters.GUI.Aud_ToneDuration = 0.03;
-%     TaskParameters.GUI.Aud_ToneOverlap = 0.6667;
-%     TaskParameters.GUI.Aud_Ramp = 0.003;
-%     TaskParameters.GUI.Aud_SamplingRate = 192000;
-%     TaskParameters.GUI.Aud_UseMiddleOctave=0;
-%     TaskParameters.GUI.Aud_Levels.AudFracHigh = [5, 30, 45, 55, 70, 95]';
-%     TaskParameters.GUI.Aud_Levels.AudPFrac = ones(size(TaskParameters.GUI.Aud_Levels.AudFracHigh))/numel(TaskParameters.GUI.Aud_Levels.AudFracHigh);
-%     TaskParameters.GUIMeta.Aud_Levels.Style = 'table';
-%     TaskParameters.GUIMeta.Aud_Levels.String = 'Freq probabilities';
-%     TaskParameters.GUIMeta.Aud_Levels.ColumnLabel = {'a = Frac high','P(a)'};
-    %min auditory stimulus and general stuff
-    TaskParameters.GUI.AuditoryStimulusTime = 3;
-%     TaskParameters.GUI.AuditoryStimulusType = 1;
-%     TaskParameters.GUIMeta.AuditoryStimulusType.Style = 'popupmenu';
-%     TaskParameters.GUIMeta.AuditoryStimulusType.String = {'Clicks','Freqs'};
-    TaskParameters.GUI.MinSampleAudMin = 0.05;
-    TaskParameters.GUI.MinSampleAudMax = 0.5;
-    TaskParameters.GUI.MinSampleAudAutoincrement = true;
-    TaskParameters.GUIMeta.MinSampleAudAutoincrement.Style = 'checkbox';
-    TaskParameters.GUI.MinSampleAudIncr = 0.05;
-    TaskParameters.GUI.MinSampleAudDecr = 0.02;
-    TaskParameters.GUI.MinSampleAud = TaskParameters.GUI.MinSampleAudMin;
-    TaskParameters.GUIMeta.MinSampleAud.Style = 'text';
-    TaskParameters.GUIPanels.AudGeneral = {'AuditoryStimulusTime'}; %'AuditoryStimulusType',
-    TaskParameters.GUIPanels.AudClicks = {'AuditoryAlpha','LeftBiasAud','SumRates'};
-%     TaskParameters.GUIPanels.AudFreq = {'Aud_nFreq','Aud_NoEvidence','Aud_minFreq','Aud_maxFreq','Aud_Volume','Aud_ToneDuration','Aud_ToneOverlap','Aud_Ramp','Aud_SamplingRate','Aud_UseMiddleOctave'};
-%     TaskParameters.GUIPanels.AudFreqLevels = {'Aud_Levels'};
-    TaskParameters.GUIPanels.AudMinSample= {'MinSampleAudMin','MinSampleAudMax','MinSampleAudAutoincrement','MinSampleAudIncr','MinSampleAudDecr','MinSampleAud'};
-%     %% Block structure
-%     TaskParameters.GUI.BlockTable.BlockNumber = [1, 2, 3, 4]';
-%     TaskParameters.GUI.BlockTable.BlockLen = ones(4,1)*150;
-%     TaskParameters.GUI.BlockTable.RewL = [1 randsample([1 .6],2) 1]';
-%     TaskParameters.GUI.BlockTable.RewR = flipud(TaskParameters.GUI.BlockTable.RewL);
-%     TaskParameters.GUIMeta.BlockTable.Style = 'table';
-%     TaskParameters.GUIMeta.BlockTable.String = 'Block structure';
-%     TaskParameters.GUIMeta.BlockTable.ColumnLabel = {'Block#','Block Length','Rew L', 'Rew R'};
-%     TaskParameters.GUIPanels.BlockStructure = {'BlockTable'};
-    %% Plots
-    %Show Plots
-%     TaskParameters.GUI.ShowPsycOlf = 1;
-%     TaskParameters.GUIMeta.ShowPsycOlf.Style = 'checkbox';
-    TaskParameters.GUI.ShowPsycAud = 1;
-    TaskParameters.GUIMeta.ShowPsycAud.Style = 'checkbox';
-    TaskParameters.GUI.ShowVevaiometric = 1;
-    TaskParameters.GUIMeta.ShowVevaiometric.Style = 'checkbox';
-    TaskParameters.GUI.ShowTrialRate = 1;
-    TaskParameters.GUIMeta.ShowTrialRate.Style = 'checkbox';
-    TaskParameters.GUI.ShowFix = 1;
-    TaskParameters.GUIMeta.ShowFix.Style = 'checkbox';
-    TaskParameters.GUI.ShowST = 1;
-    TaskParameters.GUIMeta.ShowST.Style = 'checkbox';
-    TaskParameters.GUI.ShowFeedback = 1;
-    TaskParameters.GUIMeta.ShowFeedback.Style = 'checkbox';
-    TaskParameters.GUIPanels.ShowPlots = {'ShowPsycAud','ShowVevaiometric','ShowTrialRate','ShowFix','ShowST','ShowFeedback'};%{'ShowPsycOlf','ShowPsycAud','ShowVevaiometric','ShowTrialRate','ShowFix','ShowST','ShowFeedback'};
-    %Vevaiometric
-    TaskParameters.GUI.VevaiometricMinWT = 2;
-    TaskParameters.GUI.VevaiometricNBin = 8;
-    TaskParameters.GUI.VevaiometricShowPoints = 1;
-    TaskParameters.GUIMeta.VevaiometricShowPoints.Style = 'checkbox';
-    TaskParameters.GUIPanels.Vevaiometric = {'VevaiometricMinWT','VevaiometricNBin','VevaiometricShowPoints'};
-    %%
-    TaskParameters.GUI = orderfields(TaskParameters.GUI);
-    %% Tabs
-    TaskParameters.GUITabs.General = {'StimDelay','BiasControl','General','FeedbackDelay'};%{'StimDelay','BiasControl','General','FeedbackDelay','BlockStructure'};
-%     TaskParameters.GUITabs.Odor = {'Olfactometer','OlfStimuli'};
-    TaskParameters.GUITabs.Auditory = {'AudGeneral','AudMinSample','AudClicks'}; %,'AudFreq','AudFreqLevels'
-    TaskParameters.GUITabs.Plots = {'ShowPlots','Vevaiometric'};
-    %%Non-GUI Parameters (but saved)
-    TaskParameters.Figures.OutcomePlot.Position = [200, 200, 1000, 400];
-    TaskParameters.Figures.ParameterGUI.Position =  [9, 454, 1474, 562];
-    
+    TaskParameters = CreateTaskParameters(GUICurVer);
+elseif ~isfield(TaskParameters.GUI, 'GUIVer')
+    TaskParameters.GUI.GUIVer = 0;
 end
+if TaskParameters.GUI.GUIVer ~= GUICurVer
+    Overwrite = true;
+    WriteOnlyNew = ~Overwrite;
+    DefaultTaskParameter = CreateTaskParameters(GUICurVer);
+    if isfield(TaskParameters.GUI,'OmegaTable')
+        TaskParameters.GUI.OmegaTable = ...
+            UpdateStructVer(TaskParameters.GUI.OmegaTable,...
+                            DefaultTaskParameter.GUI.OmegaTable,...
+                            WriteOnlyNew);
+    end
+    [TaskParameters.GUI.OmegaTable,~] = orderfields(...
+               TaskParameters.GUI.OmegaTable, {'Omega','RDK','OmegaProb'});
+    TaskParameters.GUI = UpdateStructVer(TaskParameters.GUI,...
+                                         DefaultTaskParameter.GUI,WriteOnlyNew);
+    TaskParameters.GUIMeta = UpdateStructVer(TaskParameters.GUIMeta,...
+                                         DefaultTaskParameter.GUIMeta,Overwrite);
+    TaskParameters.GUIPanels = UpdateStructVer(TaskParameters.GUIPanels,...
+                                         DefaultTaskParameter.GUIPanels,Overwrite);
+    TaskParameters.Figures = UpdateStructVer(TaskParameters.Figures,...
+                                         DefaultTaskParameter.Figures,Overwrite);
+    % GUITabs are read only, user can't change nothing about them, so just
+    % assign them
+    TaskParameters.GUITabs = DefaultTaskParameter.GUITabs;
+    TaskParameters.GUI.GUIVer = GUICurVer;
+end
+% Warn the user if the rig we are running on is not the same as the last
+% one we ran on.
+computerName = getenv('computername');
+if strcmp(TaskParameters.GUI.ComputerName, 'Unassigned')
+    disp('No computer rig is assigned to this animal. Won''t warn user.');
+elseif ~strcmp(TaskParameters.GUI.ComputerName, computerName)
+    Opt.Interpreter = 'tex';
+    Opt.Default = 'Quit';
+    msg = '\fontsize{12}This computer (\bf'+string(computerName)+'\rm) '...
+        + 'is not the same last saved computer (\bf'...
+        + string(TaskParameters.GUI.ComputerName)+'\rm) that this '...
+        + 'animal (\bf'+string(BpodSystem.GUIData.SubjectName)+'\rm) '...
+        + 'was running on with this configration (\bf'...
+        + string(BpodSystem.GUIData.SettingsFileName)+'\rm).'...
+        + '\newline\newline'...
+        + 'Continue?';
+    answer = questdlg(msg, 'Different training rig detected','Continue',...
+        'Quit', Opt);
+    if strcmp(answer, 'Quit')
+        RunProtocol('Stop');
+        return;
+    end
+end
+% Set to nan so user might remember to set it
+TaskParameters.GUI.MouseWeight = nan;
+TaskParameters.GUI.ComputerName = computerName;
 BpodParameterGUI('init', TaskParameters);
 
 %% Initializing data (trial type) vectors
-% BpodSystem.Data.Custom.BlockNumber = 1;
-% BpodSystem.Data.Custom.BlockTrial = 1;
 BpodSystem.Data.Custom.ChoiceLeft = [];
 BpodSystem.Data.Custom.ChoiceCorrect = [];
 BpodSystem.Data.Custom.Feedback = false(0);
 BpodSystem.Data.Custom.FeedbackTime = [];
 BpodSystem.Data.Custom.FixBroke = false(0);
 BpodSystem.Data.Custom.EarlyWithdrawal = false(0);
+BpodSystem.Data.Custom.MissedChoice = false(0);
 BpodSystem.Data.Custom.FixDur = [];
 BpodSystem.Data.Custom.MT = [];
 BpodSystem.Data.Custom.CatchTrial = false;
-% BpodSystem.Data.Custom.OdorFracA = randsample([min(TaskParameters.GUI.OdorTable.OdorFracA) max(TaskParameters.GUI.OdorTable.OdorFracA)],2)';
-% BpodSystem.Data.Custom.OdorID = 2 - double(BpodSystem.Data.Custom.OdorFracA > 50);
-% BpodSystem.Data.Custom.OdorPair = ones(1,2)*2;
 BpodSystem.Data.Custom.ST = [];
+BpodSystem.Data.Custom.OptoEnabled_stimulus_delivery = false;
 BpodSystem.Data.Custom.Rewarded = false(0);
-BpodSystem.Data.Custom.RewardMagnitude = TaskParameters.GUI.RewardAmount*[1,1];%[TaskParameters.GUI.BlockTable.RewL(1), TaskParameters.GUI.BlockTable.RewR(1)];
+BpodSystem.Data.Custom.RewardAfterMinSampling = false(0);
+BpodSystem.Data.Custom.PreStimCntrReward = [];
+BpodSystem.Data.Custom.LightIntensityLeft = [];
+BpodSystem.Data.Custom.LightIntensityRight = [];
+BpodSystem.Data.Custom.SoundLeft = [];
+BpodSystem.Data.Custom.SoundRight = [];
+BpodSystem.Data.Custom.GratingOrientation = [];
+% RewardMagnitude is an array of length 2
+% TODO: Use an array of 1 and just assign it to the rewarding port
+BpodSystem.Data.Custom.RewardMagnitude = TaskParameters.GUI.RewardAmount*[1,1];
+BpodSystem.Data.Custom.CenterPortRewAmount =TaskParameters.GUI.CenterPortRewAmount;
 BpodSystem.Data.Custom.TrialNumber = [];
-BpodSystem.Data.Custom.AuditoryTrial = rand(1,2) < TaskParameters.GUI.PercentAuditory;
-% BpodSystem.Data.Custom.ClickTask = true(1,2) & TaskParameters.GUI.AuditoryStimulusType == 1;
-% BpodSystem.Data.Custom.OlfactometerStartup = false;
-% BpodSystem.Data.Custom.PsychtoolboxStartup = false;
+BpodSystem.Data.Custom.ForcedLEDTrial = false;
+BpodSystem.Data.Custom.CatchCount = zeros(1, 21);
+BpodSystem.Data.Custom.LastSuccessCatchTial = 1;
+% Setting StartTime to any value, it will be overwritten by the first poke
+% in if we are in homecage
+BpodSystem.ProtocolSettings.StartTime = posixtime(datetime('now'));
+
+file_size = 40*1024*1024; % 40 MB mem-mapped file
+mapped_file = createMMFile(tempdir, 'mmap_matlab_plot.dat', file_size);
 
 % make auditory stimuli for first trials
-for a = 1:2
-%     switch BpodSystem.Data.Custom.ClickTask(a)
-%         case true
-            if BpodSystem.Data.Custom.AuditoryTrial(a)
-                BpodSystem.Data.Custom.AuditoryOmega(a) = betarnd(TaskParameters.GUI.AuditoryAlpha/4,TaskParameters.GUI.AuditoryAlpha/4,1,1);
-                BpodSystem.Data.Custom.LeftClickRate(a) = round(BpodSystem.Data.Custom.AuditoryOmega(a)*TaskParameters.GUI.SumRates);
-                BpodSystem.Data.Custom.RightClickRate(a) = round((1-BpodSystem.Data.Custom.AuditoryOmega(a))*TaskParameters.GUI.SumRates);
-                BpodSystem.Data.Custom.LeftClickTrain{a} = GeneratePoissonClickTrain(BpodSystem.Data.Custom.LeftClickRate(a), TaskParameters.GUI.AuditoryStimulusTime);
-                BpodSystem.Data.Custom.RightClickTrain{a} = GeneratePoissonClickTrain(BpodSystem.Data.Custom.RightClickRate(a), TaskParameters.GUI.AuditoryStimulusTime);
-                %correct left/right click train
-                if ~isempty(BpodSystem.Data.Custom.LeftClickTrain{a}) && ~isempty(BpodSystem.Data.Custom.RightClickTrain{a})
-                    BpodSystem.Data.Custom.LeftClickTrain{a}(1) = min(BpodSystem.Data.Custom.LeftClickTrain{a}(1),BpodSystem.Data.Custom.RightClickTrain{a}(1));
-                    BpodSystem.Data.Custom.RightClickTrain{a}(1) = min(BpodSystem.Data.Custom.LeftClickTrain{a}(1),BpodSystem.Data.Custom.RightClickTrain{a}(1));
-                elseif  isempty(BpodSystem.Data.Custom.LeftClickTrain{a}) && ~isempty(BpodSystem.Data.Custom.RightClickTrain{a})
-                    BpodSystem.Data.Custom.LeftClickTrain{a}(1) = BpodSystem.Data.Custom.RightClickTrain{a}(1);
-                elseif ~isempty(BpodSystem.Data.Custom.LeftClickTrain{1}) &&  isempty(BpodSystem.Data.Custom.RightClickTrain{a})
-                    BpodSystem.Data.Custom.RightClickTrain{a}(1) = BpodSystem.Data.Custom.LeftClickTrain{a}(1);
-                else
-                    BpodSystem.Data.Custom.LeftClickTrain{a} = round(1/BpodSystem.Data.Custom.LeftClickRate*10000)/10000;
-                    BpodSystem.Data.Custom.RightClickTrain{a} = round(1/BpodSystem.Data.Custom.RightClickRate*10000)/10000;
-                end
-                if length(BpodSystem.Data.Custom.LeftClickTrain{a}) > length(BpodSystem.Data.Custom.RightClickTrain{a})
-                    BpodSystem.Data.Custom.LeftRewarded(a) = double(1);
-                elseif length(BpodSystem.Data.Custom.LeftClickTrain{1}) < length(BpodSystem.Data.Custom.RightClickTrain{a})
-                    BpodSystem.Data.Custom.LeftRewarded(a) = double(0);
-                else
-                    BpodSystem.Data.Custom.LeftRewarded(a) = rand<0.5;
-                end
-            else
-                BpodSystem.Data.Custom.AuditoryOmega(a) = NaN;
-                BpodSystem.Data.Custom.LeftClickRate(a) = NaN;
-                BpodSystem.Data.Custom.RightClickRate(a) = NaN;
-                BpodSystem.Data.Custom.LeftClickTrain{a} = [];
-                BpodSystem.Data.Custom.RightClickTrain{a} = [];
-            end
-            
-            
-%         case false
-%             StimulusSettings.SamplingRate = TaskParameters.GUI.Aud_SamplingRate; % Sound card sampling rate;
-%             StimulusSettings.ramp = TaskParameters.GUI.Aud_Ramp;
-%             StimulusSettings.nFreq = TaskParameters.GUI.Aud_nFreq; % Number of different frequencies to sample from
-%             StimulusSettings.ToneOverlap = TaskParameters.GUI.Aud_ToneOverlap;
-%             StimulusSettings.ToneDuration = TaskParameters.GUI.Aud_ToneDuration;
-%             StimulusSettings.Noevidence=TaskParameters.GUI.Aud_NoEvidence;
-%             StimulusSettings.minFreq = TaskParameters.GUI.Aud_minFreq ;
-%             StimulusSettings.maxFreq = TaskParameters.GUI.Aud_maxFreq ;
-%             StimulusSettings.UseMiddleOctave=TaskParameters.GUI.Aud_UseMiddleOctave;
-%             StimulusSettings.Volume=TaskParameters.GUI.Aud_Volume;
-%             StimulusSettings.nTones = floor((TaskParameters.GUI.AuditoryStimulusTime-StimulusSettings.ToneDuration*StimulusSettings.ToneOverlap)/(StimulusSettings.ToneDuration*(1-StimulusSettings.ToneOverlap))); %number of tones
-%             
-%             EasyProb = zeros(numel(TaskParameters.GUI.Aud_Levels.AudPFrac),1);
-%             EasyProb(1) = 0.5; EasyProb(end)=0.5;
-%             newFracHigh = randsample(TaskParameters.GUI.Aud_Levels.AudFracHigh,1,1,EasyProb);
-%             [Sound, Cloud, ~] = GenerateToneCloudDual(newFracHigh/100, StimulusSettings);
-%             BpodSystem.Data.Custom.AudFracHigh(a) = newFracHigh;
-%             BpodSystem.Data.Custom.AudCloud{a} = Cloud;
-%             BpodSystem.Data.Custom.AudSound{a} = Sound;
-%             BpodSystem.Data.Custom.LeftRewarded(a)= newFracHigh>50;
-%     end
-    if BpodSystem.Data.Custom.AuditoryTrial(a)
-%         if BpodSystem.Data.Custom.ClickTask
-            BpodSystem.Data.Custom.DV(a) = (length(BpodSystem.Data.Custom.LeftClickTrain{a}) - length(BpodSystem.Data.Custom.RightClickTrain{a}))./(length(BpodSystem.Data.Custom.LeftClickTrain{a}) + length(BpodSystem.Data.Custom.RightClickTrain{a}));
-%         else
-%             BpodSystem.Data.Custom.DV(a) = (2*BpodSystem.Data.Custom.AudFracHigh(a)-100)/100;
-%         end
-%         BpodSystem.Data.Custom.OdorFracA(a) = NaN;
-%         BpodSystem.Data.Custom.OdorID(a) = NaN;
-%         BpodSystem.Data.Custom.OdorPair(a) = NaN;
+for a = 1:Const.NUM_EASY_TRIALS
+    if TaskParameters.GUI.StimulusSelectionCriteria == StimulusSelectionCriteria.BetaDistribution
+        % This random value is between 0 and 1, the beta distribution
+        % parameters makes it very likely to very close to zero or very
+        % close to 1.
+        BpodSystem.Data.Custom.StimulusOmega(a) = betarnd(TaskParameters.GUI.BetaDistAlphaNBeta/4,TaskParameters.GUI.BetaDistAlphaNBeta/4,1,1);
+    elseif TaskParameters.GUI.StimulusSelectionCriteria == StimulusSelectionCriteria.DiscretePairs
+        index = find(TaskParameters.GUI.OmegaTable.OmegaProb > 0, 1);
+        Intensity = TaskParameters.GUI.OmegaTable.Omega(index)/100;
     else
-%         BpodSystem.Data.Custom.DV(a) = (2*BpodSystem.Data.Custom.OdorFracA(a)-100)/100;
+        assert(false, 'Unexpected StimulusSelectionCriteria');
     end
+    % Randomly choose right or left
+    isLeftRewarded = rand(1, 1) >= 0.5;
+    % In case of beta distribution, our distribution is symmetric,
+    % so prob < 0.5 is == prob > 0.5, so we can just pick the value
+    % that corrects the bias
+    if ~isLeftRewarded && Intensity >= 0.5
+        Intensity = -Intensity + 1;
+    end
+    BpodSystem.Data.Custom.StimulusOmega(a) = Intensity;
+
+    switch TaskParameters.GUI.ExperimentType
+        case ExperimentType.Auditory
+            DV = CalcAudClickTrain(a);
+        case ExperimentType.LightIntensity
+            DV = CalcLightIntensity(a);
+        case ExperimentType.SoundDiscrimination
+            DV = CalcSoundDiscrimination(a);
+        case ExperimentType.GratingOrientation
+            DV = CalcGratingOrientation(a);
+        case ExperimentType.RandomDots
+            DV = CalcDotsCoherence(a);
+        otherwise
+            assert(false, 'Unexpected ExperimentType');
+    end
+    if DV > 0
+        BpodSystem.Data.Custom.LeftRewarded(a) = 1;
+    elseif DV < 0
+        BpodSystem.Data.Custom.LeftRewarded(a) = 0;
+    else
+        BpodSystem.Data.Custom.LeftRewarded(a) = rand<0.5; % It's equal distribution
+    end
+    % cross-modality difficulty for plotting
+    BpodSystem.Data.Custom.DV(a) = DV;
 end%for a+1:2
+% Bpod will provide feedback that we can useto trigger pulse pal
 
 BpodSystem.SoftCodeHandlerFunction = 'SoftCodeHandler';
 
@@ -268,61 +166,138 @@ load PulsePalParamFeedback.mat
 BpodSystem.Data.Custom.PulsePalParamStimulus=PulsePalParamStimulus;
 BpodSystem.Data.Custom.PulsePalParamFeedback=PulsePalParamFeedback;
 clear PulsePalParamFeedback PulsePalParamStimulus
-if BpodSystem.Data.Custom.AuditoryTrial(1)
-   if ~BpodSystem.EmulatorMode
-    
-%     if BpodSystem.Data.Custom.ClickTask(1) 
-        ProgramPulsePal(BpodSystem.Data.Custom.PulsePalParamStimulus);
-        SendCustomPulseTrain(1, BpodSystem.Data.Custom.RightClickTrain{1}, ones(1,length(BpodSystem.Data.Custom.RightClickTrain{1}))*5);
-        SendCustomPulseTrain(2, BpodSystem.Data.Custom.LeftClickTrain{1}, ones(1,length(BpodSystem.Data.Custom.LeftClickTrain{1}))*5);
-%     else
-%         InitiatePsychtoolbox(1);
-%         PsychToolboxSoundServer('Load', 1, BpodSystem.Data.Custom.AudSound{1});
-%         BpodSystem.Data.Custom.AudSound{1} = {};
-%     end
-    end
+
+if TaskParameters.GUI.ExperimentType == ExperimentType.Auditory && ~BpodSystem.EmulatorMode
+    ProgramPulsePal(BpodSystem.Data.Custom.PulsePalParamStimulus);
+    SendCustomPulseTrain(1, BpodSystem.Data.Custom.RightClickTrain{1}, ones(1,length(BpodSystem.Data.Custom.RightClickTrain{1}))*5);
+    SendCustomPulseTrain(2, BpodSystem.Data.Custom.LeftClickTrain{1}, ones(1,length(BpodSystem.Data.Custom.LeftClickTrain{1}))*5);
+elseif TaskParameters.GUI.ExperimentType == ExperimentType.RandomDots || ...
+       TaskParameters.GUI.ExperimentType == ExperimentType.GratingOrientation
+        BpodSystem.Data.dotsMapped_file = createMMFile('c:\Bpoduser\', 'mmap_matlab_randomdot.dat', file_size);
+        BpodSystem.Data.dotsMapped_file.Data(1:4) = typecast(uint32(0), 'uint8');
 end
 
-%% Initialize plots
-BpodSystem.ProtocolFigures.SideOutcomePlotFig = figure('Position', TaskParameters.Figures.OutcomePlot.Position,'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandleOutcome = axes('Position',    [  .055          .15 .91 .3]);
-% BpodSystem.GUIHandles.OutcomePlot.HandlePsycOlf = axes('Position',    [1*.05          .6  .1  .3], 'Visible', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandlePsycAud = axes('Position',    [2*.05 + 1*.08   .6  .1  .3], 'Visible', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandleTrialRate = axes('Position',  [3*.05 + 2*.08   .6  .1  .3], 'Visible', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandleFix = axes('Position',        [4*.05 + 3*.08   .6  .1  .3], 'Visible', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandleST = axes('Position',         [5*.05 + 4*.08   .6  .1  .3], 'Visible', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandleFeedback = axes('Position',   [6*.05 + 5*.08   .6  .1  .3], 'Visible', 'off');
-BpodSystem.GUIHandles.OutcomePlot.HandleVevaiometric = axes('Position',   [7*.05 + 6*.08   .6  .1  .3], 'Visible', 'off');
-MainPlot(BpodSystem.GUIHandles.OutcomePlot,'init');
-BpodSystem.ProtocolFigures.ParameterGUI.Position = TaskParameters.Figures.ParameterGUI.Position;
+
+% Set current stimulus for next trial - set between -100 to +100
+TaskParameters.GUI.CurrentStim = iff(BpodSystem.Data.Custom.DV(1) > 0, (BpodSystem.Data.Custom.DV(1) + 1)/0.02,(BpodSystem.Data.Custom.DV(1) - 1)/0.02);
+
 %BpodNotebook('init');
+iTrial=0;
+sendPlotData(mapped_file,iTrial,BpodSystem.Data.Custom,TaskParameters.GUI, [0]);
 
 %% Main loop
+SAVE_EVERY = 20;
+shouldSave = false;
 RunSession = true;
 iTrial = 1;
-
-while RunSession
+sleepDur = 0;
+trialEndTime = clock;
+SettingsPath = BpodSystem.SettingsPath; % Needed later for unsaved changes
+% The state-matrix is generated only once in each iteration, however some
+% of the trials parameters are pre-generated and updated in the plots few
+% iterations before.
+tic;
+while true
+    BpodSystem.Data.Timer.startNewIter(iTrial) = toc; tic;
     TaskParameters = BpodParameterGUI('sync', TaskParameters);
-    
-%     InitiateOlfactometer(iTrial);
-%     InitiatePsychtoolbox(iTrial);
-    
+    BpodSystem.Data.Timer.SyncGUI(iTrial) = toc; tic;
     sma = stateMatrix(iTrial);
+    BpodSystem.Data.Timer.BuildStateMatrix(iTrial) = toc; tic;
     SendStateMatrix(sma);
+    BpodSystem.Data.Timer.SendStateMatrix(iTrial) = toc;
+    pauseTime = (trialEndTime + sleepDur) - clock();
+    if pauseTime > 0
+        pause(pauseTime);
+    end
+    TrialStartSysTime = clock; % Used to aproximate the start time of the
+                               % so we can bind trial later to imaging data.
     RawEvents = RunStateMatrix;
+    BpodSystem.Data.Custom.TrialStartSysTime(iTrial) = posixtime(...
+                                              datetime(TrialStartSysTime));
+    trialEndTime = clock;
     if ~isempty(fieldnames(RawEvents))
+        tic;
         BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents);
         BpodSystem.Data.TrialSettings(iTrial) = TaskParameters;
-        SaveBpodSessionData;
+        BpodSystem.Data.Timer.AppendData(iTrial) = toc; tic;
     end
-    HandlePauseCondition; % Checks to see if the protocol is paused. If so, waits until user resumes.
+    CheckHomeCageStop(BpodSystem);
     if BpodSystem.BeingUsed == 0
+        SavedTaskParameters = BpodSystem.ProtocolSettings;
+        if ~BpodSystem.Data.Custom.IsHomeCage
+            CheckUnsaved(TaskParameters, SavedTaskParameters,...
+                         SettingsPath, BpodSystem);
+        end
+        while true
+            try
+                SaveBpodSessionData;
+                break;
+            catch ME
+                warning(strcat("Error during last save: " + getReport(ME)));
+                warning(datestr(datetime('now')) + ": trying again in few secs...");
+                pause(.5);
+            end
+        end
+        SessionAnalysis(BpodSystem.DataPath);
         return
     end
-    
+    HandlePauseCondition; % Checks to see if the protocol is paused. If so, waits until user resumes.
+    BpodSystem.Data.Timer.HandlePause(iTrial) = toc;
+    startTimer = tic;
     updateCustomDataFields(iTrial);
-    MainPlot(BpodSystem.GUIHandles.OutcomePlot,'update',iTrial);
+    BpodSystem.Data.Timer.updateCustomDataFields(iTrial) = toc(startTimer); tic;
+    sendPlotData(mapped_file,iTrial,BpodSystem.Data.Custom,TaskParameters.GUI, BpodSystem.Data.TrialStartTimestamp);
+    BpodSystem.Data.Timer.sendPlotData(iTrial) = toc; tic;
+    % Saving takes a lot of time when the number of trial increases. To
+    % keep the animal motivated, don't save if the animal got the last
+    % trial correctly as they are usually eager to do more trials. Wait for
+    % the first mistake where there will be probably a timeout punishment
+    % and save.
+    if mod(iTrial, SAVE_EVERY) == 0
+        shouldSave = true;
+    end
+    if shouldSave && ~BpodSystem.Data.Custom.Rewarded(iTrial) && ...
+       ~BpodSystem.Data.Custom.CatchTrial(iTrial)
+        try
+            SaveBpodSessionData;
+            shouldSave = false;
+        catch ME
+            warning(datestr(datetime('now')) + ": Failed to save file: " + ME.message);
+        end
+    end
+    BpodSystem.Data.Timer.SaveData(iTrial) = toc; tic;
     iTrial = iTrial + 1;
-    
+    if ~TaskParameters.GUI.PCTimeout
+        BpodSystem.Data.Timer.calculateTimeout(iTrial-1) = toc;
+        continue
+    end
+    sleepDur = 0;
+    statesThisTrial = BpodSystem.Data.RawData.OriginalStateNamesByNumber{iTrial-1}(BpodSystem.Data.RawData.OriginalStateData{iTrial-1});
+    if any(strcmp('broke_fixation',statesThisTrial))
+        if TaskParameters.GUI.PlayNoiseforError
+            if BpodSystem.EmulatorMode == 0
+                OverrideMessage = ['VS' uint8(11)];
+                BpodSerialWrite(OverrideMessage, 'uint8');
+            else
+                BpodSystem.VirtualManualOverrideBytes = OverrideMessage;
+                BpodSystem.ManualOverrideFlag = 1;
+            end
+        end
+        sleepDur = sleepDur + TaskParameters.GUI.TimeOutBrokeFixation;
+    end
+    if any(strcmp('timeOut_IncorrectChoice',statesThisTrial))
+        sleepDur = sleepDur + TaskParameters.GUI.TimeOutIncorrectChoice;
+    end
+    if any(strcmp('timeOut_SkippedFeedback',statesThisTrial))
+        sleepDur = sleepDur + TaskParameters.GUI.TimeOutSkippedFeedback;
+    end
+    if any(strcmp('timeOut_missed_choice',statesThisTrial))
+        sleepDur = sleepDur + TaskParameters.GUI.TimeOutMissedChoice;
+    end
+    if any(strcmp('ITI',statesThisTrial))
+        sleepDur = sleepDur + TaskParameters.GUI.ITI;
+    end
+    BpodSystem.Data.Timer.calculateTimeout(iTrial-1) = toc;
 end
+sca;
 end
