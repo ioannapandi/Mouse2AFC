@@ -3,10 +3,10 @@ global BpodSystem
 global TaskParameters
 
 %% Define ports
-LeftPort = floor(mod(TaskParameters.GUI.Ports_LMRAir/1000,10));
-CenterPort = floor(mod(TaskParameters.GUI.Ports_LMRAir/100,10));
-RightPort = floor(mod(TaskParameters.GUI.Ports_LMRAir/10,10));
-AirSolenoid = mod(TaskParameters.GUI.Ports_LMRAir,10);
+LeftPort = floor(mod(TaskParameters.GUI.Ports_LMRAudLRAir/100000,10));         
+CenterPort = floor(mod(TaskParameters.GUI.Ports_LMRAudLRAir/10000,10));
+RightPort = floor(mod(TaskParameters.GUI.Ports_LMRAudLRAir/1000,10));
+AirSolenoid = mod(TaskParameters.GUI.Ports_LMRAudLRAir,10);
 LeftPortOut = strcat('Port',num2str(LeftPort),'Out');
 CenterPortOut = strcat('Port',num2str(CenterPort),'Out');
 RightPortOut = strcat('Port',num2str(RightPort),'Out');
@@ -37,6 +37,20 @@ elseif TaskParameters.GUI.ExperimentType == ExperimentType.LightIntensity
     RightPWMStim = round(BpodSystem.Data.Custom.LightIntensityRight(iTrial)*RightPWM/100);
     DeliverStimulus = {strcat('PWM',num2str(LeftPort)),LeftPWMStim,...
                        strcat('PWM',num2str(RightPort)),RightPWMStim};
+    ContDeliverStimulus = DeliverStimulus;
+    StopStimulus = iff(TaskParameters.GUI.StimAfterPokeOut, DeliverStimulus, {});
+    ChoiceStopStimulus = {};
+    EWDStopStimulus = {};
+elseif TaskParameters.GUI.ExperimentType == ExperimentType.SoundDiscrimination
+    % Divide maxsound by 100 to get fraction value
+    LeftSoundPort = floor(mod(TaskParameters.GUI.Ports_LMRAudLRAir/100,10));
+    RightSoundPort = floor(mod(TaskParameters.GUI.Ports_LMRAudLRAir/10,10));
+    LeftSoundPWM = round((100-TaskParameters.GUI.LeftSoundAttenPrcnt) * 2.55);
+    RightSoundPWM = round((100-TaskParameters.GUI.RightSoundAttenPrcnt) * 2.55);
+    LeftPWMSound = round(BpodSystem.Data.Custom.SoundLeft(iTrial)*LeftSoundPWM/100);
+    RightPWMSound = round(BpodSystem.Data.Custom.SoundRight(iTrial)*RightSoundPWM/100);
+    DeliverStimulus = {strcat('PWM',num2str(LeftSoundPort)),LeftPWMSound,...
+                       strcat('PWM',num2str(RightSoundPort)),RightPWMSound};
     ContDeliverStimulus = DeliverStimulus;
     StopStimulus = iff(TaskParameters.GUI.StimAfterPokeOut, DeliverStimulus, {});
     ChoiceStopStimulus = {};

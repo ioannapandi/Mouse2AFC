@@ -10,7 +10,7 @@ BpodSystem.Data.Custom.IsHomeCage = isfield(BpodSystem.ProtocolSettings, 'HomeCa
 %% Task parameters
 global TaskParameters
 TaskParameters = BpodSystem.ProtocolSettings;
-GUICurVer = 28;
+GUICurVer = 29;
 if isempty(fieldnames(TaskParameters))
     TaskParameters = CreateTaskParameters(GUICurVer);
 elseif ~isfield(TaskParameters.GUI, 'GUIVer')
@@ -87,6 +87,8 @@ BpodSystem.Data.Custom.RewardAfterMinSampling = false(0);
 BpodSystem.Data.Custom.PreStimCntrReward = [];
 BpodSystem.Data.Custom.LightIntensityLeft = [];
 BpodSystem.Data.Custom.LightIntensityRight = [];
+BpodSystem.Data.Custom.SoundLeft = [];
+BpodSystem.Data.Custom.SoundRight = [];
 BpodSystem.Data.Custom.GratingOrientation = [];
 % RewardMagnitude is an array of length 2
 % TODO: Use an array of 1 and just assign it to the rewarding port
@@ -135,6 +137,8 @@ for a = 1:Const.NUM_EASY_TRIALS
             DV = CalcGratingOrientation(a);
         case ExperimentType.RandomDots
             DV = CalcDotsCoherence(a);
+        case ExperimentType.SoundDiscrimination
+            DV = CalcSoundDiscrimination(a);
         otherwise
             assert(false, 'Unexpected ExperimentType');
     end
