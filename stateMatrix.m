@@ -50,8 +50,8 @@ elseif TaskParameters.GUI.ExperimentType == ExperimentType.SoundDiscrimination
     % Divide maxsound by 100 to get fraction value
     LeftPWMSound = round(BpodSystem.Data.Custom.SoundLeft(iTrial)*LeftSoundPWM/100);
     RightPWMSound = round(BpodSystem.Data.Custom.SoundRight(iTrial)*RightSoundPWM/100);
-    DeliverStimulus = {strcat('PWM',num2str(LeftSound)),LeftPWMSound,...
-                       strcat('PWM',num2str(RightSound)),RightPWMSound};
+    DeliverStimulus = {strcat('PWM',num2str(LeftSoundPort)),LeftPWMSound,...
+                       strcat('PWM',num2str(RightSoundPort)),RightPWMSound};
     ContDeliverStimulus = DeliverStimulus;
     StopStimulus = iff(TaskParameters.GUI.StimAfterPokeOut, DeliverStimulus, {});
     ChoiceStopStimulus = {};
